@@ -26,11 +26,12 @@ export const listarProdutos = (): Produto[] => {
 /**
  * Busca um produto específico pelo seu ID único.
  * @param id - O identificador único do produto.
- * @returns O produto encontrado ou undefined caso não exista.
+ * @returns O produto encontrado ou undefined se não for encontrado.
  */
 export const buscarProdutoPorId = (id: number): Produto | undefined => {
-    return produtos.find(produto => produto.id === id);
-}
+    const produto = produtos.find(produto => produto.id === id);
+    return produto;
+};
 
 /**
  * Filtra e retorna todos os produtos que pertencem a uma categoria específica.
