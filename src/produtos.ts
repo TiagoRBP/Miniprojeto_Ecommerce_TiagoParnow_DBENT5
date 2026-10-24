@@ -15,19 +15,39 @@ const produtos: Produto[] = [
     { id: 12, nome: "Gaveteiro Volante com Chave", categoria: "moveis", preco: 280.00, estoque: 14 }
 ]
 
+/**
+ * Lista todos os produtos cadastrados no catálogo.
+ * @returns Um array contendo todos os produtos.
+ */
 export const listarProdutos = (): Produto[] => {
     return produtos;
 }
 
+/**
+ * Busca um produto específico pelo seu ID único.
+ * @param id - O identificador único do produto.
+ * @returns O produto encontrado ou undefined caso não exista.
+ */
 export const buscarProdutoPorId = (id: number): Produto | undefined => {
     return produtos.find(produto => produto.id === id);
 }
 
+/**
+ * Filtra e retorna todos os produtos que pertencem a uma categoria específica.
+ * @param categoria - O nome da categoria a ser filtrada.
+ * @returns Um array com os produtos da categoria.
+ */
 export const buscarProdutosPorCategoria = (categoria: string): Produto[] => {
     return produtos.filter(produto => produto.categoria === categoria);
 }
 
-// 4. Adicionar um novo produto (com validações e reabastecimento inteligente por nome)
+/**
+ * Adiciona um novo produto ao catálogo com validações de integridade 
+ * e suporte a reabastecimento inteligente caso o nome já exista.
+ * 
+ * @param novoProduto - O objeto contendo os dados do produto.
+ * @throws Error se o nome estiver vazio, o preço for menor/igual a zero, estoque negativo ou ID duplicado.
+ */
 export function adicionarProduto(novoProduto: Produto): void {
     if (!novoProduto.nome || novoProduto.nome.trim() === "") {
         throw new Error("Erro: O nome do produto não pode estar vazio."); // Validação 1: Nome não pode estar vazio
@@ -47,13 +67,59 @@ export function adicionarProduto(novoProduto: Produto): void {
         return;
     }
 
-    const produtoExitentePorId = buscarProdutoPorId(novoProduto.id);
-    if (produtoExitentePorId) {
+    const produtoExistentePorId = buscarProdutoPorId(novoProduto.id);
+    if (produtoExistentePorId) {
         throw new Error(`Erro: Já existe um produto com o ID ${novoProduto.id}.`); // 4. Se não existe por nome, verifica se o ID é único
     }
 
     produtos.push(novoProduto);
     console.log(`✅ Produto "${novoProduto.nome}" adicionado com sucesso!`); // 5. Cadastra o novo produto no array
 }
+
+/**
+ * Pesquisa produtos cujo nome contenha o termo especificado (busca parcial e case-insensitive).
+ * 
+ * @param termo - O texto ou parte do nome a ser pesquisado.
+ * @returns Um array com os produtos correspondentes.
+ */
+export const buscarProdutosPorNome = (termo: string): Produto[] => {
+    return produtos.filter(produto =>
+        produto.nome.toLowerCase().includes(termo.toLowerCase())
+    );
+};
+
+/**
+ * Atualiza os dados de um produto existente pelo seu ID.
+ * Permite atualização parcial dos campos (preço, estoque, nome, etc.).
+ * @param id - O identificador único do produto
+ * @param dadosAtualizados - Objeto contendo os campos a serem modificados
+ * @returns O produto devidamente atualizado
+ * @throws Error se o produto não for encontrado
+ */
+export const atualizarProduto = (id: number, dadosAtualizados: Partial<Produto>): Produto => {
+    const produto = buscarProdutoPorId(id);
+    if (!produto) {
+        throw new Error(`Erro: Produto com ID ${id} não encontrado.`);
+    }
+    Object.assign(produto, dadosAtualizados);
+
+    return produto;
+};
+
+/**
+ * Remove um produto do catálogo pelo seu ID.
+ * @param id - O identificador único do produto a ser removido
+ * @returns O produto que foi removido
+ * @throws Error se o produto não for encontrado
+ */
+
+export const removerProduto = (id: number): Produto => {
+    const index = produtos.findIndex(produto => produto.id === id);
+    if (index === -1) {
+        throw new Error(`Erro: Produto com ID ${id} não foi encontrado para remoção.`);
+    }
+    const [produtoRemovido] = produtos.splice(index, 1);
+    return produtoRemovido!;
+};
 
 
