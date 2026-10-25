@@ -57,7 +57,6 @@ export const adicionarCliente = (novoCliente: Cliente): void => {
 
 /**
  * Retorna uma lista formatada apenas com os e-mails dos clientes (Uso do map).
-
  */
 export const listarEmailsClientes = (): string[] => {
     return clientes.map(cliente => cliente.email);
