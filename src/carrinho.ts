@@ -61,7 +61,7 @@ export const alterarQuantidadeCarrinho = (produtoId: number, novaQuantidade: num
         throw new Error(`Erro: Estoque insuficiente para "${produto.nome}". Disponível: ${produto.estoque}, Solicitado: ${novaQuantidade}.`);
     }
 
-    const item = carrinho.find(i => i.produtoId === produtoId);
+    const item = carrinho.find(item => item.produtoId === produtoId);
     if (!item) {
         throw new Error(`Erro: O produto com ID ${produtoId} não se encontra no carrinho.`);
     }
@@ -91,5 +91,9 @@ export const calcularTotalCarrinho = (): number => {
         const subtotalItem = item.valorUnitario * item.quantidade;
         return acumulador + subtotalItem;
     }, 0);
+};
+
+export const limparCarrinho = (): void => {
+    carrinho = [];
 };
 

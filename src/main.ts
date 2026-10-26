@@ -1,26 +1,33 @@
-import { 
-    adicionarProduto, 
-    listarProdutos, 
-    buscarProdutoPorId, 
-    buscarProdutosPorCategoria, 
-    buscarProdutosPorNome, 
-    atualizarProduto, 
-    removerProduto 
+import {
+    adicionarProduto,
+    listarProdutos,
+    buscarProdutoPorId,
+    buscarProdutosPorCategoria,
+    buscarProdutosPorNome,
+    atualizarProduto,
+    removerProduto
 } from './produtos.js';
 
-import { 
-    listarClientes, 
-    buscarClientePorId, 
-    adicionarCliente 
+import {
+    listarClientes,
+    buscarClientePorId,
+    adicionarCliente
 } from "./clientes.js";
 
-import { 
-    adicionarAoCarrinho, 
-    alterarQuantidadeCarrinho, 
-    removerDoCarrinho, 
-    listarCarrinho, 
-    calcularTotalCarrinho 
+import {
+    adicionarAoCarrinho,
+    alterarQuantidadeCarrinho,
+    removerDoCarrinho,
+    listarCarrinho,
+    calcularTotalCarrinho
 } from "./carrinho.js";
+
+import {
+    finalizarPedido,
+    listarPedidos,
+    buscarPedidoPorId,
+    buscarPedidosPorCliente
+} from "./pedidos.js";
 
 // ==========================================
 // 🧪 INICIANDO TESTES DE QA - PRODUTOS
@@ -36,22 +43,22 @@ console.table(listarProdutos());
 
 // 2. Testando Reabastecimento Inteligente
 console.log("\n🔄 [TC-02] Testando reabastecimento inteligente (Ryzen 5 5600):");
-adicionarProduto({ 
-    id: 99, 
-    nome: "Processador AMD Ryzen 5 5600", 
-    categoria: "hardware", 
-    preco: 850.00, 
-    estoque: 10 
+adicionarProduto({
+    id: 99,
+    nome: "Processador AMD Ryzen 5 5600",
+    categoria: "hardware",
+    preco: 850.00,
+    estoque: 10
 });
 
 // 3. Adicionando um novo produto de raiz
 console.log("\n✨ [TC-03] Adicionando um novo produto (SSD NVMe):");
-adicionarProduto({ 
-    id: 13, 
-    nome: "SSD NVMe 1TB M.2", 
-    categoria: "hardware", 
-    preco: 450.00, 
-    estoque: 20 
+adicionarProduto({
+    id: 13,
+    nome: "SSD NVMe 1TB M.2",
+    categoria: "hardware",
+    preco: 450.00,
+    estoque: 20
 });
 
 // 4. Buscando por ID
@@ -267,4 +274,67 @@ try {
 
 console.log("\n==========================================");
 console.log("✅ FIM DOS TESTES DE QA - CARRINHO");
+console.log("==========================================");
+
+// ==========================================
+// 🧪 INICIANDO TESTES DE QA - PEDIDOS
+// ==========================================
+
+console.log("\n==========================================");
+console.log("🧪 INICIANDO TESTES DE QA - PEDIDOS");
+console.log("==========================================");
+
+// 1. Teste de Erro Esperado: Carrinho Vazio
+console.log("\n❌ [TC-01] [ERRO ESPERADO] Tentar finalizar pedido com carrinho vazio:");
+try {
+    finalizarPedido(1); // Cliente Ana Luiza (ID 1)
+} catch (erro: any) {
+    console.log("✅ Validação de carrinho vazio funcionou:", erro.message);
+}
+
+// 2. Teste de Erro Esperado: Cliente Inexistente
+console.log("\n❌ [TC-02] [ERRO ESPERADO] Tentar finalizar pedido para cliente inexistente:");
+try {
+    // Primeiro adicionamos um item ao carrinho para testar a validação do cliente
+    adicionarAoCarrinho(2, 1); // 1x Placa de Vídeo
+    finalizarPedido(999); // Cliente ID 999 não existe
+} catch (erro: any) {
+    console.log("✅ Validação de cliente inexistente funcionou:", erro.message);
+}
+
+// 3. Teste de Sucesso: Finalizar Pedido Válido
+console.log("\n🛍️ [TC-03] Finalizando um pedido válido (Cliente Carlos Eduardo - ID 2):");
+try {
+    // O carrinho já tem 1x Placa de Vídeo (ID 2). Vamos adicionar mais um item:
+    adicionarAoCarrinho(4, 2); // 2x Licença Windows 11 (ID 4)
+
+    console.log("🛒 Carrinho antes de finalizar:");
+    console.table(listarCarrinho());
+
+    const novoPedido = finalizarPedido(2);
+    console.log("📄 Detalhes do Pedido Gerado:", novoPedido);
+} catch (erro: any) {
+    console.error("❌ Falha inesperada ao finalizar pedido:", erro.message);
+}
+
+// 4. Verificação de Pós-Condição: Carrinho deve estar Vazio
+console.log("\n🧹 [TC-04] Verificando se o carrinho foi esvaziado após o pedido:");
+console.table(listarCarrinho());
+
+// 5. Verificação de Pós-Condição: Baixa Real no Estoque de Produtos
+console.log("\n📦 [TC-05] Verificando baixa de estoque no catálogo de produtos:");
+console.table(listarProdutos());
+
+// 6. Testes de Consulta ao Histórico de Pedidos
+console.log("\n📋 [TC-06] Listando todos os pedidos registrados no sistema:");
+console.table(listarPedidos());
+
+console.log("\n🔍 [TC-07] Buscando pedidos específicos por cliente (Cliente ID 2):");
+console.log(buscarPedidosPorCliente(2));
+
+console.log("\n🔍 [TC-08] Buscando pedido por ID único (Pedido #1):");
+console.log(buscarPedidoPorId(1));
+
+console.log("\n==========================================");
+console.log("✅ FIM DOS TESTES DE QA - PEDIDOS");
 console.log("==========================================");

@@ -26,5 +26,6 @@ export type Pedido = {
     itens: CarrinhoItem[];
     valorTotal: number;
     data: Date;
+    status: "CONCLUIDO" | "CANCELADO";
 }
 
